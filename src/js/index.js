@@ -72,7 +72,7 @@ async function onSearchFormSubmit(e) {
     }   
 }
 
-async function onLoadMoreBtnClick() {
+async function onLoadMoreBtnClick() { 
     currentPage += 1;
     const response = await fetchSearchContent(searchVariable, currentPage);
     renderCard(response);
