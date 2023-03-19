@@ -19,14 +19,6 @@ let currentHits = 0;
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
-//var lightbox = $('.gallery a').simpleLightbox({ /* options */ });
-
-//let lightbox = $('.photo-card a',).simpleLightbox({
- // captions: true,
- // captionsData: 'alt',
- // captionDelay: 250,
-//});
-
 let lightbox = new SimpleLightbox('.photo-card a', {
 captions: true,
 captionsData: 'alt',
@@ -41,9 +33,8 @@ async function onSearchFormSubmit(e) {
     if (searchVariable === '') {
         return;
     }
-    
+    try {   
     const response = await fetchSearchContent(searchVariable, currentPage);
-    console.log(response);
     currentHits = response.hits.length;
 
     if (response.totalHits > 40) {
@@ -55,10 +46,9 @@ async function onSearchFormSubmit(e) {
     if (response.totalHits === 0) {
         refs.searchList.innerHTML = '';
         Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        
         };
-    try {            
-        if (response.totalHits > 0) {
+             
+    if (response.totalHits > 0) {
                 
         refs.endMessage.classList.add('is-hidden');
         Notify.success(`Hooray! We found ${response.totalHits} images.`);
@@ -68,12 +58,13 @@ async function onSearchFormSubmit(e) {
         lightbox.refresh();
     }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }   
 }
 
 async function onLoadMoreBtnClick() { 
     currentPage += 1;
+    try {
     const response = await fetchSearchContent(searchVariable, currentPage);
     renderCard(response);
     lightbox.refresh();
@@ -83,6 +74,10 @@ async function onLoadMoreBtnClick() {
         refs.loadMoreBtn.classList.add('is-hidden');
         refs.endMessage.classList.remove('is-hidden');
     }
+    } catch (error) {
+        console.error(error);
+    }
+    
 }
 
 function renderCard(response) {
